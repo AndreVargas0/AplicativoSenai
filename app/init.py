@@ -10,4 +10,8 @@ def index():
 def cadastrar_aluno():
     return render_template('novoaluno.html')
 
+@app.route('/menu')
+def menu():
+    return render_template('menu.html')
+
 app.run(debug=True)
