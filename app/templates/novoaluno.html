@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro</title>
+    <link rel="stylesheet" href="{{url_for('static', filename='css/style2.css')}}" />
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>Cadastro</h1>  
+        </div>
+        
+    </header>
+    <main>
+        <div class="login-container">
+            <form class="login-form">
+                <input class="login-container" type="text" name="ra" placeholder="RA" required>
+                <input class="login-container" type="text" name="Nome do aluno" placeholder="Nome do aluno" required>
+                <input class="login-container" type="text" name="Tempo de estudo" placeholder="Tempo de estudo" required>
+                <input class="login-container" type="text" name="Renda Familiar" placeholder="Renda Familiar" required>
+                <button class="login-container" type="submit" value="CADASTRAR">CADASTRAR</button>
+            </form>
+        </div>
+    </main>
+</body>
+</html>

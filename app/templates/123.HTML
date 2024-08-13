@@ -11,7 +11,10 @@
         <img src="https://static.portaldaindustria.com.br/media/uploads/logotipos/logo-senai.png" alt="Logo da Empresa" width="200" height="100">
         <h2>Entrar</h2>
         <form action="/logar" method="post">
-            <input class="login-container" type="text" name="ra" placeholder="RA" required>
+            <input class="login-container" type="text" id="ra" placeholder="RA" required>
+            <input class="login-container" type="text" id="nome" placeholder="nome" required>
+            <input class="login-container" type="text" id="Tempo de estudo" placeholder="Tempo de estudo" required>
+            <input class="login-container" type="text" id="Renda Familiar" placeholder="Renda Familiar" required>
             <button class="login-container" type="submit" value="enviar">enviar</button>
         </form>
         <a href="{{url_for('cadastrar_aluno')}}">cadastre-se</a>
