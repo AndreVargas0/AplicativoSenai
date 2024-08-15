@@ -26,8 +26,11 @@
               <label for="floatingInput">RA</label>
             </div>
             <button class="w-100 mb-2 btn btn-lg rounded-3 btn-primary" type="submit">Entrar</button>    
-            <div class="mensagem">
+            {% if mensagem %}
+            <div class="alert alert-danger text-center" role="alert" >
+                {{ mensagem }}
             </div>
+            {% endif %}
             <a class="w-100 mb-2 btn btn-lg rounded-3 btn-primary" href="/cadastro" role="button">Cadastre-se</a>
           </form>
         </div>

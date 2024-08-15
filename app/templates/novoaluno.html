@@ -49,7 +49,7 @@
                         <div class="col-md-6">
                             <label for="nome" class="form-label">NOME</label>
                             <input type="text" class="form-control" id="nome" name="nome" >
-                        </div>
+                        </div> 
 
                         <div class="col-md-6">
                             <label for="tempoestudo" class="form-label">Tempo de estudo</label>
@@ -64,6 +64,11 @@
                         <div class="d-grid gap-2 col-6 mx-auto">
                             <button class="btn btn-primary" type="submit">Enviar cadastro</button>
                         </div>
+                        {% if mensagem2 %}
+                        <div class="alert alert-info text-center" role="alert" >
+                        {{ mensagem2 }}
+                        </div>
+                        {% endif %}
                     </form>
                 </div>
             </div>

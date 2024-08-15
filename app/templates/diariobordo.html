@@ -14,7 +14,7 @@
   <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
     <a href="/" class="d-flex align-items-center mb-2 mb-lg-0 text-black text-decoration-none">
       <img src="https://static.portaldaindustria.com.br/media/uploads/logotipos/logo-senai.png" alt="" width=""
-        height="24">
+        height="40">
       <svg class="bi me-2" width="40" height="32" role="img" aria-label="Bootstrap">
         <use xlink:href="#bootstrap"></use>
       </svg>
@@ -65,20 +65,23 @@
         <hr>
       </div>
     </div>
-    <div class="col py-3 ImgagemDeFuno" id="conteudo"
-      style="background-image: url('https://uploads.metroimg.com/wp-content/uploads/2020/09/24183845/Senai-Taguatinga.jpg'); background-repeat: no-repeat; background-attachment: fixed; background-size: cover;">
-      <h3>Bem vindo(a)</h3>
-      <h2 class="bg-light text-wrap">
-        A jornada que vocês trilham é cheia de desafios, mas também repleta de momentos de grande impacto. Cada dia na
-        sala de aula é uma oportunidade de tocar vidas, inspirar mentes e moldar futuros. Mesmo que os frutos do seu
-        trabalho nem sempre sejam imediatamente visíveis, saibam que a dedicação e o amor que vocês investem na educação
-        fazem toda a diferença. Continuem acreditando no poder transformador da educação e no imenso valor da sua
-        missão. Vocês são os verdadeiros construtores do amanhã.
+    <!-- <div class="col py-3 ImgagemDeFuno" id="conteudo"
+      style="background-image: url('https://uploads.metroimg.com/wp-content/uploads/2020/09/24183845/Senai-Taguatinga.jpg'); background-repeat: no-repeat; background-attachment: fixed; background-size: cover;"> -->
+      <div class="col py-3 ImgagemDeFuno" id="conteudo">
+      <h3>Bem vindo(a) {{nome}}.</h3>
+      <h2 >
+        A sua jornada acadêmica é uma aventura de descobertas e crescimento, e cada desafio é uma oportunidade para se fortalecer e aprender. Mantenha-se determinado e não deixe que as dificuldades o desanime, pois são esses momentos que moldam o seu sucesso. Acredite no seu potencial, trabalhe com paixão e perseverança, e lembre-se de que cada pequeno esforço conta para construir um futuro brilhante. Continue acreditando em si mesmo e nunca pare de sonhar grande!
       </h2>
+      <div class="d-flex justify-content-center">
+        <img src="https://i.pinimg.com/736x/2a/1f/9a/2a1f9ab792b273f001d0c70c3defc0de.jpg" class="img-fluid" style="width: 30%; height: auto;" alt="Descrição da imagem">
+      </div>
     </div>
   </div>
 </div>
 </div>
+
+<!-- const backgroundOriginal = document.getElementById('conteudo').style;
+ conteudo.style.backgroundImage = "url('https://uploads.metroimg.com/wp-content/uploads/2020/09/24183845/Senai-Taguatinga.jpg')"-->
 
 <script>
   const conteudoOriginal = document.getElementById('conteudo').innerHTML;
@@ -86,8 +89,6 @@
   function restaurarConteudo() {
     const conteudo = document.getElementById('conteudo');
     conteudo.innerHTML = conteudoOriginal;
-    const backgroundOriginal = document.getElementById('conteudo').style;
-    conteudo.style.backgroundImage = "url('https://uploads.metroimg.com/wp-content/uploads/2020/09/24183845/Senai-Taguatinga.jpg')"
   }
 
   function trocarConteudo1() {
@@ -127,44 +128,44 @@
   function trocarConteudo3() {
     const conteudo = document.getElementById('conteudo');
     conteudo.innerHTML = `                   
-                <div class="modal modal-sheet position-static d-block p-4 py-md-5" tabindex="-1" role="dialog"
-                    id="modalSignin">
-                    <div class="modal-dialog" role="document">
-                        <div class="modal-content rounded-4 shadow">
-                            <div class="modal-header p-5 pb-4 border-bottom-0">
-                                <h1 class="fw-bold mb-0 fs-2">Cadastre o aluno</h1>
-                            </div>
-
-                            <div class="modal-body p-5 pt-0">
-                                <form class="row g-3 needs-validation" novalidate>
-                                    <div class="col-md-6">
-                                        <label for="validationCustom01" class="form-label">RA</label>
-                                        <input type="text" class="form-control" id="validationCustom01" required>
-                                    </div>
-
-                                    <div class="col-md-6">
-                                        <label for="validationCustom02" class="form-label">NOME</label>
-                                        <input type="text" class="form-control" id="validationCustom02" required>
-                                    </div>
-
-                                    <div class="col-md-6">
-                                        <label for="validationCustom03" class="form-label">Tempo de estudo</label>
-                                        <input type="int" class="form-control" id="validationCustom03" required>
-                                    </div>
-
-                                    <div class="col-md-6">
-                                        <label for="validationCustom05" class="form-label">Renda Familiar</label>
-                                        <input type="int" class="form-control" id="validationCustom05" required>
-                                    </div>
-
-                                    <div class="d-grid gap-2 col-6 mx-auto">
-                                        <button class="btn btn-primary" type="submit">Enviar cadastro</button>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
+    <div class="modal modal-sheet position-static d-block p-4 py-md-5" tabindex="-1" role="dialog"
+        id="modalSignin">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content rounded-4 shadow">
+                <div class="modal-header p-5 pb-4 border-bottom-0">
+                    <h1 class="fw-bold mb-0 fs-2">Faça seu cadastro</h1>
                 </div>
+
+                <div class="modal-body p-5 pt-0">
+                    <form class="row g-3 needs-validation" action="/criaraluno" method="POST" novalidate>
+                        <div class="col-md-6">
+                            <label for="ra" class="form-label">RA</label>
+                            <input type="text" class="form-control" id="ra" name="ra" maxlength="8" required>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="nome" class="form-label">NOME</label>
+                            <input type="text" class="form-control" id="nome" name="nome" >
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="tempoestudo" class="form-label">Tempo de estudo</label>
+                            <input type="number" class="form-control" id="tempoestudo" name="tempoestudo" required>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="rendafamiliar" class="form-label">Renda Familiar</label>
+                            <input type="text" class="form-control" id="rendafamiliar" name="rendafamiliar" required>
+                        </div>
+
+                        <div class="d-grid gap-2 col-6 mx-auto">
+                            <button class="btn btn-primary" type="submit">Enviar cadastro</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
                 `;
     conteudo.style.backgroundImage = "none";
     conteudo.style.backgroundColor = "white";
