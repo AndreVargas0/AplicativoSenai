@@ -40,25 +40,25 @@
                 </div>
 
                 <div class="modal-body p-5 pt-0">
-                    <form class="row g-3 needs-validation" novalidate>
+                    <form class="row g-3 needs-validation" action="/criaraluno" method="POST" novalidate>
                         <div class="col-md-6">
-                            <label for="validationCustom01" class="form-label">RA</label>
-                            <input type="text" class="form-control" id="validationCustom01" required>
+                            <label for="ra" class="form-label">RA</label>
+                            <input type="text" class="form-control" id="ra" name="ra" maxlength="8" required>
                         </div>
 
                         <div class="col-md-6">
-                            <label for="validationCustom02" class="form-label">NOME</label>
-                            <input type="text" class="form-control" id="validationCustom02" required>
+                            <label for="nome" class="form-label">NOME</label>
+                            <input type="text" class="form-control" id="nome" name="nome" >
                         </div>
 
                         <div class="col-md-6">
-                            <label for="validationCustom03" class="form-label">Tempo de estudo</label>
-                            <input type="int" class="form-control" id="validationCustom03" required>
+                            <label for="tempoestudo" class="form-label">Tempo de estudo</label>
+                            <input type="number" class="form-control" id="tempoestudo" name="tempoestudo" required>
                         </div>
 
                         <div class="col-md-6">
-                            <label for="validationCustom05" class="form-label">Renda Familiar</label>
-                            <input type="int" class="form-control" id="validationCustom05" required>
+                            <label for="rendafamiliar" class="form-label">Renda Familiar</label>
+                            <input type="text" class="form-control" id="rendafamiliar" name="rendafamiliar" required>
                         </div>
 
                         <div class="d-grid gap-2 col-6 mx-auto">

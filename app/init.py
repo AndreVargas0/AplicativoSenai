@@ -23,3 +23,4 @@ def logar():
         return f'O ra está errado'
 app.run(debug=True)
 
+
