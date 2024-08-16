@@ -1,4 +1,4 @@
-from flask import Flask,render_template,request
+from flask import Flask,render_template,request,jsonify
 
 from flask_sqlalchemy import SQLAlchemy
 
@@ -14,7 +14,7 @@ app = Flask(__name__)
 import urllib.parse
 
 user = 'root'
-password = urllib.parse.quote_plus('senai@123')
+password = urllib.parse.quote_plus('andre123')
 
 host = 'localhost'
 database = 'projetodiario1'
@@ -68,5 +68,27 @@ def criar():
     session.commit()
     mensagem2 = "cadastro efetuado com sucesso"
     return render_template('novoaluno.html',mensagem2=mensagem2)
+
+@app.route('/alunos', methods=['GET'])
+def listar_alunos():
+    try:
+        # Busca somente os nomes dos alunos cadastrados no banco de dados
+        nomes_alunos = [aluno.nome for aluno in session.query(Aluno.nome).all()]
+    except Exception as e:
+        session.rollback()
+        mensagem = f"Erro ao tentar recuperar a lista de alunos: {str(e)}"
+        return f"<p>{mensagem}</p>", 500
+    finally:
+        session.close()
+
+    # Cria o HTML da tabela
+    tabela_html = "<table border='1'><tr><th>Nome</th></tr>"
+    for nome in nomes_alunos:
+        tabela_html += f"<tr><td>{nome}</td></tr>"
+    tabela_html += "</table>"
+
+    # Retorna a tabela como resposta
+    return tabela_html, 200
+
    
 app.run(debug=True)

@@ -111,19 +111,22 @@
 
   function trocarConteudo2() {
     const conteudo = document.getElementById('conteudo');
-    conteudo.innerHTML = `
-                <ul>
-                  <li>Lucas Martins</li>
-                  <li>Isabela Costa</li>
-                  <li>Felipe Almeida</li>
-                  <li>Sofia Lima</li>
-                  <li>Gustavo Ribeiro</li>
-                  <li>Camila Dias</li>
-                </ul>
-                `;
-    conteudo.style.backgroundImage = "none";
-    conteudo.style.backgroundColor = "white";
-  }
+    fetch('/alunos')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Erro ao buscar os dados.');
+            }
+            return response.text(); // Recebe o HTML do template
+        })
+        .then(html => {
+            conteudo.innerHTML = html; // Insere o HTML no elemento 'conteudo'
+        })
+        .catch(error => {
+            console.error('Erro:', error);
+            conteudo.innerHTML = `<p>Não foi possível carregar o conteúdo.</p>`;
+        });
+}
+
 
   function trocarConteudo3() {
     const conteudo = document.getElementById('conteudo');
