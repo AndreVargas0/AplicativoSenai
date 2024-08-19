@@ -67,13 +67,18 @@
     </div>
     <!-- <div class="col py-3 ImgagemDeFuno" id="conteudo"
       style="background-image: url('https://uploads.metroimg.com/wp-content/uploads/2020/09/24183845/Senai-Taguatinga.jpg'); background-repeat: no-repeat; background-attachment: fixed; background-size: cover;"> -->
-      <div class="col py-3 ImgagemDeFuno" id="conteudo">
+    <div class="col py-3 ImgagemDeFuno" id="conteudo">
       <h3>Bem vindo(a) {{nome}}.</h3>
-      <h2 >
-        A sua jornada acadêmica é uma aventura de descobertas e crescimento, e cada desafio é uma oportunidade para se fortalecer e aprender. Mantenha-se determinado e não deixe que as dificuldades o desanime, pois são esses momentos que moldam o seu sucesso. Acredite no seu potencial, trabalhe com paixão e perseverança, e lembre-se de que cada pequeno esforço conta para construir um futuro brilhante. Continue acreditando em si mesmo e nunca pare de sonhar grande!
+      <h2>
+        A sua jornada acadêmica é uma aventura de descobertas e crescimento, e cada desafio é uma oportunidade para se
+        fortalecer e aprender. Mantenha-se determinado e não deixe que as dificuldades o desanime, pois são esses
+        momentos que moldam o seu sucesso. Acredite no seu potencial, trabalhe com paixão e perseverança, e lembre-se de
+        que cada pequeno esforço conta para construir um futuro brilhante. Continue acreditando em si mesmo e nunca pare
+        de sonhar grande!
       </h2>
       <div class="d-flex justify-content-center">
-        <img src="https://i.pinimg.com/736x/2a/1f/9a/2a1f9ab792b273f001d0c70c3defc0de.jpg" class="img-fluid" style="width: 30%; height: auto;" alt="Descrição da imagem">
+        <img src="https://i.pinimg.com/736x/2a/1f/9a/2a1f9ab792b273f001d0c70c3defc0de.jpg" class="img-fluid"
+          style="width: 30%; height: auto;" alt="Descrição da imagem">
       </div>
     </div>
   </div>
@@ -112,20 +117,20 @@
   function trocarConteudo2() {
     const conteudo = document.getElementById('conteudo');
     fetch('/alunos')
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Erro ao buscar os dados.');
-            }
-            return response.text(); // Recebe o HTML do template
-        })
-        .then(html => {
-            conteudo.innerHTML = html; // Insere o HTML no elemento 'conteudo'
-        })
-        .catch(error => {
-            console.error('Erro:', error);
-            conteudo.innerHTML = `<p>Não foi possível carregar o conteúdo.</p>`;
-        });
-}
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Erro ao buscar os dados.');
+        }
+        return response.text(); // Recebe o HTML do template
+      })
+      .then(html => {
+        conteudo.innerHTML = html; // Insere o HTML no elemento 'conteudo'
+      })
+      .catch(error => {
+        console.error('Erro:', error);
+        conteudo.innerHTML = `<p>Não foi possível carregar o conteúdo.</p>`;
+      });
+  }
 
 
   function trocarConteudo3() {
@@ -136,20 +141,16 @@
         <div class="modal-dialog" role="document">
             <div class="modal-content rounded-4 shadow">
                 <div class="modal-header p-5 pb-4 border-bottom-0">
-                    <h1 class="fw-bold mb-0 fs-2">Faça seu cadastro</h1>
+                    <h1 class="fw-bold mb-0 fs-2">Faça o cadastro</h1>
                 </div>
 
                 <div class="modal-body p-5 pt-0">
-                    <form class="row g-3 needs-validation" action="/criaraluno" method="POST" novalidate>
-                        <div class="col-md-6">
-                            <label for="ra" class="form-label">RA</label>
-                            <input type="text" class="form-control" id="ra" name="ra" maxlength="8" required>
-                        </div>
+                    <form id="criaraluno" class="row g-3 needs-validation" action="/criaraluno_2" method="POST" novalidate>
 
-                        <div class="col-md-6">
+                        <div class="col-md-12">
                             <label for="nome" class="form-label">NOME</label>
                             <input type="text" class="form-control" id="nome" name="nome" >
-                        </div>
+                        </div> 
 
                         <div class="col-md-6">
                             <label for="tempoestudo" class="form-label">Tempo de estudo</label>
@@ -164,6 +165,19 @@
                         <div class="d-grid gap-2 col-6 mx-auto">
                             <button class="btn btn-primary" type="submit">Enviar cadastro</button>
                         </div>
+                        <div id="resultado">
+                        {% if mensagem2 %}
+                        <div class="alert alert-info text-center" role="alert" >
+                        {{ mensagem2 }}
+                        </div>
+                        {% endif %}
+                        </div>
+                        {% if mensagem_aluno %}
+                        <div class="alert alert-danger text-center" role="alert" >
+                        {{ mensagem_aluno }}
+                        </div>
+                        {% endif %}
+                        </div>
                     </form>
                 </div>
             </div>
@@ -173,4 +187,23 @@
     conteudo.style.backgroundImage = "none";
     conteudo.style.backgroundColor = "white";
   }
+
+
+  $(document).ready(function () {
+    $('#criaraluno').on('submit', function (event) {
+      event.preventDefault(); // Impede o comportamento padrão de envio do formulário
+      $.ajax({
+        type: 'POST',
+        url: '/diariobordo',
+        data: $(this).serialize(), // Envia os dados do formulário
+        success: function (response) {
+          $('#resultado').html(response); // Atualiza a <div> com a resposta
+        },
+        error: function () {
+          $('#resultado').html('Ocorreu um erro ao processar sua solicitação.');
+        }
+      });
+    });
+  });
+
 </script>

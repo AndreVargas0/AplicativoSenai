@@ -9,9 +9,9 @@
 
 </div>
 
-<body style= "background-image: url('https://uploads.metroimg.com/wp-content/uploads/2020/09/24183845/Senai-Taguatinga.jpg'); background-repeat: no-repeat; background-attachment: fixed; background-size: cover;">
-  <div class="modal modal-sheet position-static d-block p-4 py-md-5" tabindex="-1" role="dialog"
-    id="modalSignin">
+<body
+  style="background-image: url('https://uploads.metroimg.com/wp-content/uploads/2020/09/24183845/Senai-Taguatinga.jpg'); background-repeat: no-repeat; background-attachment: fixed; background-size: cover;">
+  <div class="modal modal-sheet position-static d-block p-4 py-md-5" tabindex="-1" role="dialog" id="modalSignin">
     <div class="modal-dialog" role="document">
       <div class="modal-content rounded-4 shadow">
         <div class="modal-header p-5 pb-4 border-bottom-0">
@@ -25,14 +25,40 @@
               <input type="text" name="ra" class="form-control rounded-3" id="ra" maxlength="8" required>
               <label for="floatingInput">RA</label>
             </div>
-            <button class="w-100 mb-2 btn btn-lg rounded-3 btn-primary" type="submit">Entrar</button>    
+            <button class="w-100 mb-2 btn btn-lg rounded-3 btn-primary" type="submit">Entrar</button>
             {% if mensagem %}
-            <div class="alert alert-danger text-center" role="alert" >
-                {{ mensagem }}
+            <div class="alert alert-danger text-center" role="alert">
+              {{ mensagem }}
             </div>
             {% endif %}
-            <a class="w-100 mb-2 btn btn-lg rounded-3 btn-primary" href="/cadastro" role="button">Cadastre-se</a>
           </form>
+
+          <a class="w-100 mb-2 btn btn-lg rounded-3 btn-primary" href="/cadastro" role="button">Cadastre-se</a>
+
+          <button class="w-100 mb-2 btn btn-lg rounded-3 btn-primary" type="button" data-bs-toggle="collapse"
+            data-bs-target="#conteudo" aria-expanded="false" aria-controls="conteudo">Esqueceu seu RA?</button>
+          <div class="collapse mt-3" id="conteudo">
+                <div class="modal-body p-5 pt-0">
+                    <form class="row g-3 needs-validation" action="/consultar_ra" method="POST">
+
+                        <div class="col-12">
+                            <label for="nome" class="form-label">NOME</label>
+                            <input type="text" class="form-control" id="nome" name="nome" >
+                        </div> 
+
+                        <div class="d-grid gap-2 col-6 mx-auto">
+                            <button class="btn btn-primary" type="submit">Recuperar o RA</button>
+                    </form>
+                </div>
+          </div>
+        </div>
+        {% if mensagem_recuperacao %}
+        <div class="alert alert-info text-center" role="alert" >
+        {{ mensagem_recuperacao }}
+        </div>
+        {% endif %}
+
+
         </div>
       </div>
     </div>
