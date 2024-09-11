@@ -14,7 +14,7 @@ app = Flask(__name__)
 import urllib.parse
 
 user = 'root'
-password = urllib.parse.quote_plus('andre123')
+password = urllib.parse.quote_plus('senai@123')
 
 host = 'localhost'
 database = 'projetodiario1'
@@ -127,6 +127,11 @@ def consultar_ra():
         mensagem_recuperacao = "Aluno não encontrado. Verifique se o nome foi digitado corretamente."
     
     return render_template('index.html', mensagem_recuperacao=mensagem_recuperacao)
+
+@app.route('/logout')
+def logout():
+    session.clear()
+    return render_template('index.html')
 
 
    
