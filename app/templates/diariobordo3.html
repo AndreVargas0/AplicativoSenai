@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Registrar Diário</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <form id="audioForm" method="POST" action="/teste3">
+        <div class="form-floating">
+            <textarea name="texto" class="form-control" placeholder="Escreva o seu diário de bordo" id="plmds" style="height: 100px"></textarea>
+            <label for="plmds">Escreva o seu diário de bordo</label>
+        </div>
+        <br>
+        <div class="form-check form-switch">
+            <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDefault">
+            <label class="form-check-label" for="flexSwitchCheckDefault">Gerar com microfone</label>
+        </div>
+        <br>
+        <button class="w-100 mb-2 btn btn-lg rounded-3 btn-primary" type="submit" name="action" value="audio">Criar áudio</button>
+        <div id="audioContainer">
+
+        </div> 
+        <br>
+    </form>
+
+    <h1>Texto para Fala</h1>
+
+    <form id="audioForm">
+        <textarea name="texto" id="texto" rows="4" cols="50" placeholder="Digite o texto aqui"></textarea>
+        <br>
+        <button type="submit">Gerar Áudio</button>
+    </form>
+    
+    <div id="audioPlayer"></div>
+
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('#audioForm').on('submit', function(event) {
+                event.preventDefault(); // Evita o envio normal do formulário
+    
+                $.ajax({
+                    type: 'POST',
+                    url: '/teste3',
+                    data: $(this).serialize(), // Serializa os dados do formulário
+                    success: function(response) {
+                        $('#audioPlayer').html(response.audio_html); // Atualiza a div com o HTML retornado
+                    },
+                    error: function() {
+                        alert('Erro ao gerar áudio. Tente novamente.');
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

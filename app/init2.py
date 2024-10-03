@@ -13,6 +13,10 @@ app = Flask(__name__)
 
 import urllib.parse
 
+from gtts import gTTS
+
+import os
+
 user = 'root'
 password = urllib.parse.quote_plus('senai@123')
 
@@ -133,6 +137,65 @@ def logout():
     session.clear()
     return render_template('index.html')
 
+@app.route('/diario', methods=["POST"])
+def registar__diario():
+    if request.method == 'POST':
+        action = request.form['action']
+        if action == 'audio':
+                audio_path = None
+                texto = request.form['texto']
+                idioma = 'pt'
+                tts = gTTS(text=texto, lang=idioma)
 
-   
+                # Obtenha o diretório atual do aplicativo Flask
+                base_dir = os.path.abspath(os.path.dirname(__file__))
+                static_dir = os.path.join(base_dir, 'static')
+
+                # Caminho completo do arquivo de áudio
+                audio_filename = 'audio_exemplo.mp3'
+                audio_full_path = os.path.join(static_dir, audio_filename)
+
+                # Salve o áudio
+                tts.save(audio_full_path)
+
+                # Gere o URL do áudio
+                audio_path = url_for('static', filename=audio_filename)
+                return render_template('diariobordo3.html', audio_path=audio_path)
+        
+        elif action == 'diario_banco':
+                pass
+
+@app.route('/teste')
+def teste():
+    return render_template('diariobordo3.html')
+
+@app.route('/teste3', methods=['GET', 'POST'])
+def teste2():
+    if request.method == 'POST':
+        texto = request.form['texto']
+        idioma = 'pt'
+        tts = gTTS(text=texto, lang=idioma)
+
+        base_dir = os.path.abspath(os.path.dirname(__file__))
+        static_dir = os.path.join(base_dir, 'static')
+        audio_filename = 'audio_exemplo.mp3'
+        audio_full_path = os.path.join(static_dir, audio_filename)
+
+        tts.save(audio_full_path)
+        audio_path = url_for('static', filename=audio_filename)
+
+        # Retorna o HTML do player de áudio como parte da resposta JSON
+        audio_html = f'''
+        <h2>Seu áudio:</h2>
+        <audio controls>
+            <source src="{audio_path}" type="audio/mpeg">
+            Seu navegador não suporta o elemento de áudio.
+        </audio>
+        '''
+        return jsonify(audio_html=audio_html)  # Responde com JSON
+
+    # Opcional: se for um GET, pode retornar um template ou outra coisa
+    return render_template('diariobordo3.html')
+
+
 app.run(debug=True)

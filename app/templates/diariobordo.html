@@ -61,6 +61,15 @@
             <a href="#" class="text-black nav-link px-0 align-middle" onclick="trocarConteudo3()">
               <i class="fs-4 bi-table"></i> <span class="ms-1 d-none d-sm-inline">Cadastrar alunos</span></a>
           </li>
+          <li>
+            <a href="#" class="text-black nav-link px-0 align-middle" onclick="trocarConteudo4()">
+              <i class="fs-4 bi-table"></i> <span class="ms-1 d-none d-sm-inline">Diario de bordo</span></a>
+          </li>
+          <li>
+            <a href="/teste" class="text-black nav-link px-0 align-middle" onclick="trocarConteudo4()">
+              <i class="fs-4 bi-table"></i> <span class="ms-1 d-none d-sm-inline">Diario de bordo teste</span></a>
+          </li>
+          
         </ul>
         <hr>
       </div>
@@ -188,6 +197,29 @@
     conteudo.style.backgroundColor = "white";
   }
 
+  function trocarConteudo4() {
+    const conteudo = document.getElementById('conteudo');
+    conteudo.innerHTML = `
+<form id="audioForm" method="POST" action="/teste3">
+    <div class="form-floating">
+        <textarea name="texto" class="form-control" placeholder="Escreva o seu diário de bordo" id="plmds" style="height: 100px"></textarea>
+        <label for="plmds">Escreva o seu diário de bordo</label>
+    </div>
+    <br>
+    <div class="form-check form-switch">
+        <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDefault">
+        <label class="form-check-label" for="flexSwitchCheckDefault">Gerar com microfone</label>
+    </div>
+    <br>
+    <button class="w-100 mb-2 btn btn-lg rounded-3 btn-primary" type="submit" name="action" value="audio">Criar áudio</button>
+    <div id="audioContainer"></div>
+    <br>
+</form>
+                `;
+    conteudo.style.backgroundImage = "none";
+    conteudo.style.backgroundColor = "white";
+  }
+
 
   $(document).ready(function () {
     $('#criaraluno').on('submit', function (event) {
@@ -205,5 +237,86 @@
       });
     });
   });
+  let recognition;
+        let isRecognizing = false;
 
+        // Função para inicializar o reconhecimento de voz
+        function initVoiceRecognition() {
+            if ('webkitSpeechRecognition' in window) {
+                recognition = new webkitSpeechRecognition();
+                recognition.continuous = false;
+                recognition.interimResults = true; // Permite ver os resultados parciais
+                recognition.lang = 'pt-BR'; // Define o idioma para português do Brasil
+
+                recognition.onresult = function(event) {
+                    let interimTranscript = ''; 
+                    let finalTranscript = document.getElementById('texto').value;
+
+                    for (let i = event.resultIndex; i < event.results.length; i++) {
+                        if (event.results[i].isFinal) {
+                            finalTranscript += event.results[i][0].transcript;
+                        } else {
+                            interimTranscript += event.results[i][0].transcript;
+                        }
+                    }
+
+                    document.getElementById('texto').value = finalTranscript + interimTranscript;
+                };
+
+                recognition.onerror = function(event) {
+                    console.error("Erro no reconhecimento de voz: ", event.error);
+                };
+
+                recognition.onend = function() {
+                    if (isRecognizing) {
+                        recognition.start(); // Reinicia o reconhecimento se o switch estiver ativado
+                    }
+                };
+            } else {
+                alert("Reconhecimento de voz não é suportado pelo seu navegador.");
+            }
+        }
+
+        // Função para alternar o reconhecimento de voz com base no switch
+        function toggleVoiceRecognition() {
+            const switchElement = document.getElementById('voiceSwitch');
+
+            if (switchElement.checked) {
+                if (!isRecognizing) {
+                    isRecognizing = true;
+                    recognition.start();
+                }
+            } else {
+                isRecognizing = false;
+                recognition.stop();
+            }
+        }
+
+        // Inicializa o reconhecimento de voz quando a página é carregada
+        window.onload = function() {
+            initVoiceRecognition();
+        };
+
+
+</script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function() {
+        $('#audioForm').on('submit', function(event) {
+            event.preventDefault(); // Evita o envio normal do formulário
+
+            $.ajax({
+                type: 'POST',
+                url: '/teste2', // O endpoint que você está usando
+                data: $(this).serialize(), // Serializa os dados do formulário
+                dataType: 'json', // Especifica que a resposta deve ser tratada como JSON
+                success: function(response) {
+                    $('#audioContainer').html(response.audio_html); // Atualiza a div com o HTML retornado
+                },
+                error: function() {
+                    alert('Erro ao gerar áudio. Tente novamente.');
+                }
+            });
+        });
+    });
 </script>
