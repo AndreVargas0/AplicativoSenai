@@ -1,13 +1,12 @@
 from flask import Flask,render_template,request,jsonify,redirect,url_for
-
 from flask_sqlalchemy import SQLAlchemy
-
 from sqlalchemy.orm import sessionmaker
-
 from sqlalchemy import create_engine, MetaData
-
 from sqlalchemy.ext.automap import automap_base
 from aluno import Aluno
+from datetime import datetime
+from diariobordo import Diariobordo
+import os
 
 app = Flask(__name__)
 
@@ -55,7 +54,7 @@ def logar():
     
     if aluno:
         nome = aluno.nome
-        return render_template('diariobordo.html', ra=ra, nome=nome)
+        return render_template('diariobordo.html', ra=ra, nome=nome,id=id)
     else:
         mensagem = "RA INVALIDA"
         return render_template('index.html', mensagem=mensagem)
@@ -167,35 +166,93 @@ def registar__diario():
 
 @app.route('/teste')
 def teste():
-    return render_template('diariobordo3.html')
+    return render_template('diario.html')
 
-@app.route('/teste3', methods=['GET', 'POST'])
-def teste2():
-    if request.method == 'POST':
-        texto = request.form['texto']
-        idioma = 'pt'
+
+@app.route('/teste3', methods=['POST'])
+def teste3():
+    texto = request.form.get('texto')
+    idioma = 'pt'
+
+    if not texto:
+        return '', 400  # Retorna erro 400 se o texto não for fornecido
+    
+    try:
         tts = gTTS(text=texto, lang=idioma)
 
+        # Define paths
         base_dir = os.path.abspath(os.path.dirname(__file__))
         static_dir = os.path.join(base_dir, 'static')
         audio_filename = 'audio_exemplo.mp3'
         audio_full_path = os.path.join(static_dir, audio_filename)
 
+        # Salva o arquivo de áudio
         tts.save(audio_full_path)
-        audio_path = url_for('static', filename=audio_filename)
 
-        # Retorna o HTML do player de áudio como parte da resposta JSON
-        audio_html = f'''
-        <h2>Seu áudio:</h2>
-        <audio controls>
-            <source src="{audio_path}" type="audio/mpeg">
-            Seu navegador não suporta o elemento de áudio.
-        </audio>
-        '''
-        return jsonify(audio_html=audio_html)  # Responde com JSON
+        # Define o caminho do arquivo de áudio para o template
+        audio_path = f'/static/{audio_filename}'
 
-    # Opcional: se for um GET, pode retornar um template ou outra coisa
-    return render_template('diariobordo3.html')
+        return render_template('diario.html', audio_path=audio_path)
+
+    except Exception as e:
+        return str(e), 500  # Retorna erro 500 em caso de exceção
+
+@app.route('/teste3', methods=['POST'])
+def teste3():
+    texto = request.form.get('texto')
+    idioma = 'pt'
+
+    if not texto:
+        return '', 400  # Retorna erro 400 se o texto não for fornecido
+
+    try:
+        tts = gTTS(text=texto, lang=idioma)
+
+        # Define paths
+        base_dir = os.path.abspath(os.path.dirname(__file__))
+        static_dir = os.path.join(base_dir, 'static')
+        audio_filename = 'audio_exemplo.mp3'
+        audio_full_path = os.path.join(static_dir, audio_filename)
+
+        # Salva o arquivo de áudio
+        tts.save(audio_full_path)
+
+        # Verifica qual botão foi pressionado
+        action = request.form.get('action')
+
+        if action == 'gerar_audio_e_salvar':
+            # Cria uma nova sessão
+            session = Session()
+
+            # Obtém data e hora atuais
+            datahora_atual = datetime.now()
+
+            # Cria uma nova instância de DiarioBordo
+            novo_diario = DiarioBordo(texto=texto, data=data_atual, hora=hora_atual)
+
+            # Aqui você deve adicionar o objeto `novo_diario` à sua lógica de inserção no banco
+            # (considerando que você tenha uma tabela correspondente em seu banco de dados).
+            try:
+                # Adiciona o novo registro à tabela
+                session.execute(
+                    "INSERT INTO diariobordo (texto, data, hora) VALUES (:texto, :data, :hora)",
+                    {'texto': novo_diario.texto, 'data': novo_diario.data, 'hora': novo_diario.hora}
+                )
+                session.commit()
+            except Exception as e:
+                session.rollback()
+                print(f"Erro ao salvar no banco de dados: {e}")
+                return str(e), 500
+            finally:
+                session.close()
+
+        # Define o caminho do arquivo de áudio para o template
+        audio_path = f'/static/{audio_filename}'
+
+        return render_template('diario.html', audio_path=audio_path)
+
+    except Exception as e:
+        return str(e), 500  # Retorna erro 500 em caso de exceção
 
 
 app.run(debug=True)

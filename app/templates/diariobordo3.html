@@ -18,43 +18,38 @@
             <label class="form-check-label" for="flexSwitchCheckDefault">Gerar com microfone</label>
         </div>
         <br>
-        <button class="w-100 mb-2 btn btn-lg rounded-3 btn-primary" type="submit" name="action" value="audio">Criar áudio</button>
+        <button class="w-100 mb-2 btn btn-lg rounded-3 btn-primary" type="submit">Criar áudio</button>
         <div id="audioContainer">
-
+            <!-- O áudio gerado será exibido aqui -->
         </div> 
         <br>
     </form>
 
-    <h1>Texto para Fala</h1>
-
-    <form id="audioForm">
-        <textarea name="texto" id="texto" rows="4" cols="50" placeholder="Digite o texto aqui"></textarea>
-        <br>
-        <button type="submit">Gerar Áudio</button>
-    </form>
-    
-    <div id="audioPlayer"></div>
-
-
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
-        $(document).ready(function() {
-            $('#audioForm').on('submit', function(event) {
-                event.preventDefault(); // Evita o envio normal do formulário
-    
-                $.ajax({
-                    type: 'POST',
-                    url: '/teste3',
-                    data: $(this).serialize(), // Serializa os dados do formulário
-                    success: function(response) {
-                        $('#audioPlayer').html(response.audio_html); // Atualiza a div com o HTML retornado
-                    },
-                    error: function() {
-                        alert('Erro ao gerar áudio. Tente novamente.');
-                    }
-                });
+    $(document).ready(function() {
+        $('#audioForm').on('submit', function(e) {
+            e.preventDefault(); // Impede o envio padrão do formulário
+
+            $.ajax({
+                type: 'POST',
+                url: $(this).attr('action'),
+                data: $(this).serialize(),
+                success: function(data, textStatus, xhr) {
+                    // Após o sucesso, atualize a div de áudio
+                    $('#audioContainer').html(`
+                        <h2>Seu áudio:</h2>
+                        <audio controls>
+                            <source src="/static/audio_exemplo.mp3" type="audio/mpeg">
+                            Seu navegador não suporta o elemento de áudio.
+                        </audio>
+                    `);
+                },
+                error: function(xhr, textStatus, errorThrown) {
+                    console.error('Erro ao gerar áudio:', textStatus, errorThrown);
+                }
             });
         });
+    });
     </script>
 </body>
 </html>
