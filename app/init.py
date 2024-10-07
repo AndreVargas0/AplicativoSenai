@@ -1,26 +1,34 @@
-from flask import Flask, render_template, request
+from importacoes import * 
+from rotas1 import rotas1  
+from rotas2 import rotas2 
+                                                                                                                                                                                                                                                                                                                                                            
 
 app = Flask(__name__)
+app.config['SESSION_COOKIE_NAME'] = 'session_flask'
+app.secret_key = '1234'
 
-@app.route('/')
-def index():
-    return render_template('index.html')
+user = 'root'
+password = urllib.parse.quote_plus('senai@123')
+host = 'localhost'
+database = 'projetodiario1'
+connection_string = f'mysql+pymysql://{user}:{password}@{host}/{database}'
 
-@app.route('/cadastro')
-def cadastrar_aluno():
-    return render_template('novoaluno.html')
+engine = create_engine(connection_string)
+metadata = MetaData()
+metadata.reflect(engine)
 
-@app.route('/diario')
-def abirdiario():
-    return render_template('dirariobordo.html')
+Base = automap_base(metadata=metadata)
+Base.prepare()
 
-@app.route('/logar',methods=['POST'])
-def logar():
-    ra = request.form['ra']
-    if ra == '12345619':
-        return render_template('diariobordo.html',ra=ra)
-    else:
-        return f'O ra está errado'
+Aluno = Base.classes.aluno
+DiarioBordo = Base.classes.diariobordo
+
+Session = sessionmaker(bind=engine)
+db_session = Session()
+
+
+app.register_blueprint(rotas1)
+app.register_blueprint(rotas2)
+
+
 app.run(debug=True)
-
-

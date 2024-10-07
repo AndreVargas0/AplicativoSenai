@@ -43,7 +43,7 @@
         </a>
         <ul class="nav nav-pills flex-column mb-sm-auto mb-0 align-items-center align-items-sm-start" id="menu">
           <li>
-            <a href="/DiarioDeBordo" class="text-black nav-link px-0 align-middle">
+            <a href="/sentimentosalunos" class="text-black nav-link px-0 align-middle">
               <i class="fs-4 bi-table"></i> <span class="ms-1 d-none d-sm-inline">Diario de bordo</span></a>
           </li>
         </ul>
@@ -70,110 +70,9 @@
 </div>
 </div>
 
-<!-- const backgroundOriginal = document.getElementById('conteudo').style;
- conteudo.style.backgroundImage = "url('https://uploads.metroimg.com/wp-content/uploads/2020/09/24183845/Senai-Taguatinga.jpg')"-->
+
 
 <script>
-  const conteudoOriginal = document.getElementById('conteudo').innerHTML;
-
-  function restaurarConteudo() {
-    const conteudo = document.getElementById('conteudo');
-    conteudo.innerHTML = conteudoOriginal;
-  }
-
-  function trocarConteudo1() {
-    const conteudo = document.getElementById('conteudo');
-    conteudo.innerHTML = `
-                  <div>
-                    <ul>
-                      <li>João Silava</li>
-                      <li>Maria Oliveira</li>
-                      <li>Pedro Santos</li>
-                      <li>Ana Souza</li>
-                      <li>Carlos Pereira</li>
-                      <li>Luiza Fernandes</li>
-                    </ul>
-                  </div>
-                `;
-    conteudo.style.backgroundImage = "none";
-    conteudo.style.backgroundColor = "white";
-  }
-
-  function trocarConteudo2() {
-    const conteudo = document.getElementById('conteudo');
-    fetch('/alunos')
-      .then(response => {
-        if (!response.ok) {
-          throw new Error('Erro ao buscar os dados.');
-        }
-        return response.text(); // Recebe o HTML do template
-      })
-      .then(html => {
-        conteudo.innerHTML = html; // Insere o HTML no elemento 'conteudo'
-      })
-      .catch(error => {
-        console.error('Erro:', error);
-        conteudo.innerHTML = `<p>Não foi possível carregar o conteúdo.</p>`;
-      });
-  }
-
-
-  function trocarConteudo3() {
-    const conteudo = document.getElementById('conteudo');
-    conteudo.innerHTML = `                   
-    <div class="modal modal-sheet position-static d-block p-4 py-md-5" tabindex="-1" role="dialog"
-        id="modalSignin">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content rounded-4 shadow">
-                <div class="modal-header p-5 pb-4 border-bottom-0">
-                    <h1 class="fw-bold mb-0 fs-2">Faça o cadastro</h1>
-                </div>
-
-                <div class="modal-body p-5 pt-0">
-                    <form id="criaraluno" class="row g-3 needs-validation" action="/criaraluno_2" method="POST" novalidate>
-
-                        <div class="col-md-12">
-                            <label for="nome" class="form-label">NOME</label>
-                            <input type="text" class="form-control" id="nome" name="nome" >
-                        </div> 
-
-                        <div class="col-md-6">
-                            <label for="tempoestudo" class="form-label">Tempo de estudo</label>
-                            <input type="number" class="form-control" id="tempoestudo" name="tempoestudo" required>
-                        </div>
-
-                        <div class="col-md-6">
-                            <label for="rendafamiliar" class="form-label">Renda Familiar</label>
-                            <input type="text" class="form-control" id="rendafamiliar" name="rendafamiliar" required>
-                        </div>
-
-                        <div class="d-grid gap-2 col-6 mx-auto">
-                            <button class="btn btn-primary" type="submit">Enviar cadastro</button>
-                        </div>
-                        <div id="resultado">
-                        {% if mensagem2 %}
-                        <div class="alert alert-info text-center" role="alert" >
-                        {{ mensagem2 }}
-                        </div>
-                        {% endif %}
-                        </div>
-                        {% if mensagem_aluno %}
-                        <div class="alert alert-danger text-center" role="alert" >
-                        {{ mensagem_aluno }}
-                        </div>
-                        {% endif %}
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-                `;
-    conteudo.style.backgroundImage = "none";
-    conteudo.style.backgroundColor = "white";
-  }
-
-
 
   // Função para inicializar o reconhecimento de voz
   function initVoiceRecognition() {

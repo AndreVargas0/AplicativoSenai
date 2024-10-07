@@ -52,7 +52,7 @@
             <h3>Bem vindo(a) {{nome}}.</h3>
             <form id="audioForm" method="POST" action="/DiarioDeBordoInsert">
                 <div class="form-floating">
-                    <textarea name="texto" class="form-control" placeholder="Escreva o seu diário de bordo" id="plmds"
+                    <textarea name="texto" class="form-control" placeholder="Escreva o seu diário de bordo" id="texto_diario"
                         style="height: 100px"></textarea>
                     <label for="texto">Escreva o seu diário de bordo</label>
                 </div>
@@ -61,7 +61,7 @@
                     <div class="form-floating">
                         <div class="form-check form-switch col-lg-2">
                             <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDefault" onclick="toggleVoiceRecognition()">
-                            <label class="form-check-label" for="flexSwitchCheckDefault">Gerar com microfone</label>
+                            <label class="form-check-label" for="flexSwitchCheckDefault">Escrever com a fala</label>
                         </div>
                     </div>
                 </div>
@@ -108,10 +108,10 @@
                 }
 
                 // Obtém o texto atual do textarea
-                const currentText = document.getElementById('plmds').value;
+                const currentText = document.getElementById('texto_diario').value;
 
                 // Atualiza o textarea com o texto atual mais o novo resultado
-                document.getElementById('plmds').value = currentText + finalTranscript; // Concatena o texto
+                document.getElementById('texto_diario').value = currentText + finalTranscript; // Concatena o texto
             };
 
             recognition.onerror = function (event) {
