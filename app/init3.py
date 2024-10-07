@@ -1,19 +1,18 @@
-from flask import Flask,render_template,request,jsonify,redirect,url_for,session,flash
+from flask import Flask, render_template, request, jsonify, redirect, url_for, session, flash
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import create_engine, MetaData
 from sqlalchemy.ext.automap import automap_base
 from aluno import Aluno
 from datetime import datetime
-from diariobordo import DiarioBordo
+from gtts import gTTS
 import os
 import urllib.parse
-from gtts import gTTS
 
 app = Flask(__name__)
-
+app.config['SESSION_COOKIE_NAME'] = 'session_flask'
 # Defina a chave secreta para a sessão do Flask
-app.secret_key = 'sua_chave_secreta_aqui'
+app.secret_key = 'andre123'
 
 # Configuração do banco de dados MySQL
 user = 'root'
@@ -32,12 +31,11 @@ Base.prepare()
 
 # Mapeando as tabelas
 Aluno = Base.classes.aluno
-DiarioBordo = Base.classes.diariobordo 
+DiarioBordo = Base.classes.diariobordo
 
 # Configurando o sessionmaker do SQLAlchemy
 Session = sessionmaker(bind=engine)
-db_session = Session()  # Renomeado para evitar conflito com session do Flask
-
+db_session = Session()
 
 
 @app.route('/')
@@ -54,12 +52,11 @@ def abirdiario():
 
 @app.route('/logar', methods=['POST'])
 def logar():
+    db_session = Session()
     ra = request.form['ra']
-    # Consulta ao banco de dados usando db_session (SQLAlchemy)
     aluno = db_session.query(Aluno).filter_by(ra=ra).first()
     
     if aluno:
-        # Armazene os dados na sessão do Flask
         session['ra'] = aluno.ra
         session['nome'] = aluno.nome
         
@@ -67,23 +64,18 @@ def logar():
     else:
         mensagem = "RA INVÁLIDA"
         return render_template('index.html', mensagem=mensagem)
-
+    
 # Rota da página do diário de bordo
-@app.route('/diariobordo')
+@app.route('/Menu')
 def diariobordo():
     if 'ra' in session and 'nome' in session:
         ra = session['ra']
         nome = session['nome']
-        return render_template('diariobordo.html', ra=ra, nome=nome)
+        return render_template('menu.html', ra=ra, nome=nome)
     else:
         flash('Por favor, faça login primeiro.')
         return redirect(url_for('index'))
-
-@app.route('/redirect_back')
-def redirect_back():
-    referrer = request.headers.get('Referer', url_for('home'))
-    return redirect(referrer)
-
+    
 @app.route('/criaraluno', methods=['POST'])
 def criar():
     
@@ -103,13 +95,14 @@ def criar():
     aluno = Aluno(ra=ra, nome=nome, tempoestudo=tempoestudo, rendafamiliar=rendafamiliar)
 
     try:
-      session.add(aluno) 
-      session.commit()
-    except:
-      session.rollback()
-      raise
-    finally:
-       session.close()
+        db_session.add(aluno) 
+        db_session.commit()  # Use db_session aqui
+    except Exception as e:
+        db_session.rollback()
+        # É uma boa prática logar o erro
+        print(f"Erro ao cadastrar aluno: {e}")
+        mensagem2 = "Erro ao cadastrar aluno. Tente novamente mais tarde."
+        return render_template('novoaluno.html', mensagem2=mensagem2)
 
     mensagem2 = f"Cadastro efetuado com sucesso! O RA gerado para o aluno {nome} é {ra}."
     
@@ -119,7 +112,7 @@ def criar():
 @app.route('/alunos', methods=['GET'])
 def listar_alunos():
     try:
-        nomes_alunos = [aluno.nome for aluno in session.query(Aluno.nome).all()]
+        nomes_alunos = [aluno.nome for aluno in db_session.query(Aluno.nome).all()]
     except Exception as e:
         db_session.rollback()
         mensagem = f"Erro ao tentar recuperar a lista de alunos: {str(e)}"
@@ -150,41 +143,14 @@ def consultar_ra():
     
     return render_template('index.html', mensagem_recuperacao=mensagem_recuperacao)
 
+
 @app.route('/logout')
 def logout():
     session.clear()
     return render_template('index.html')
 
-@app.route('/diario', methods=["POST"])
-def registar__diario():
-    if request.method == 'POST':
-        action = request.form['action']
-        if action == 'audio':
-                audio_path = None
-                texto = request.form['texto']
-                idioma = 'pt'
-                tts = gTTS(text=texto, lang=idioma)
-
-                # Obtenha o diretório atual do aplicativo Flask
-                base_dir = os.path.abspath(os.path.dirname(__file__))
-                static_dir = os.path.join(base_dir, 'static')
-
-                # Caminho completo do arquivo de áudio
-                audio_filename = 'audio_exemplo.mp3'
-                audio_full_path = os.path.join(static_dir, audio_filename)
-
-                # Salve o áudio
-                tts.save(audio_full_path)
-
-                # Gere o URL do áudio
-                audio_path = url_for('static', filename=audio_filename)
-                return render_template('diariobordo3.html', audio_path=audio_path, ra=ra, nome=nome,id=id)
-        
-        elif action == 'diario_banco':
-                pass
-
-@app.route('/teste')
-def teste():
+@app.route('/DiarioDeBordo')
+def DiarioDeBordo():
     # Verifique se os dados estão na sessão
     if 'ra' in session and 'nome' in session:
         ra = session['ra']
@@ -194,38 +160,15 @@ def teste():
         return render_template('diario.html', ra=ra, nome=nome)
 
 
-@app.route('/teste3', methods=['POST'])
-def teste3():
+@app.route('/DiarioDeBordoInsert', methods=['POST']) 
+def DiarioDeBordoInsert():
     texto = request.form.get('texto')
+    acao = request.form.get('acao')
     idioma = 'pt'
-
-    if not texto:
-        return '', 400  # Retorna erro 400 se o texto não for fornecido
+    ra = session['ra']
+    fk_aluno_ra = ra
+    submission_time = datetime.now()
     
-    try:
-        tts = gTTS(text=texto, lang=idioma)
-        # Define paths
-        base_dir = os.path.abspath(os.path.dirname(__file__))
-        static_dir = os.path.join(base_dir, 'static')
-        audio_filename = 'audio_exemplo.mp3'
-        audio_full_path = os.path.join(static_dir, audio_filename)
-
-        # Salva o arquivo de áudio
-        tts.save(audio_full_path)
-
-        # Define o caminho do arquivo de áudio para o template
-        audio_path = f'/static/{audio_filename}'
-
-        return render_template('diario.html', audio_path=audio_path)
-
-    except Exception as e:
-        return str(e), 500  # Retorna erro 500 em caso de exceção
-
-@app.route('/teste4', methods=['POST']) 
-def teste4():
-    texto = request.form.get('texto')
-    idioma = 'pt'
-
     if not texto:
         return '', 400  # Retorna erro 400 se o texto não for fornecido
 
@@ -241,22 +184,18 @@ def teste4():
         # Salva o arquivo de áudio
         tts.save(audio_full_path)
 
-        # Verifica qual botão foi pressionado
-        action = request.form.get('action')
+        if acao  == 'gerar_audio_e_salvar':
+                novo_diario = DiarioBordo(texto=texto, fk_aluno_ra=fk_aluno_ra, datahora=submission_time)
 
-        if action == 'gerar_audio_e_salvar':
-            ra = session.get('ra')  # Use .get para evitar KeyError 
-            datahora_atual = datetime.now()
-            novo_diario = DiarioBordo(texto=texto, datahora=datahora_atual, ra=ra)
+                try:
+                    db_session.add(novo_diario)  # Use db_session para adicionar
+                    db_session.commit()
+                except Exception as e:
+                    db_session.rollback()  # Corrigido o rollback
+                    print(f"Erro ao salvar no banco de dados: {e}")
+                    return str(e), 500  
 
-            try:
-                session.add(novo_diario)
-                session.commit()
-            except Exception as e:
-                session.rollback()
-                print(f"Erro ao salvar no banco de dados: {e}")
-                return str(e), 500
-
+                                                    
         # Define o caminho do arquivo de áudio para o template
         audio_path = url_for('static', filename=audio_filename)
 
@@ -264,7 +203,6 @@ def teste4():
 
     except Exception as e:
         return str(e), 500  # Retorna erro 500 em caso de exceção
-
 
 
 app.run(debug=True)

@@ -34,41 +34,15 @@
     <div class="row flex-nowrap">
         <div class="col-auto col-md-3 col-xl-2 px-sm-2 px-0 bg-primary">
             <div class="d-flex flex-column align-items-center align-items-sm-start px-3 pt-2 text-white min-vh-100">
-                <a href="#" class="d-flex align-items-center pb-3 mb-md-0 me-md-auto text-black text-decoration-none"
+                <a href="/Menu" class="d-flex align-items-center pb-3 mb-md-0 me-md-auto text-black text-decoration-none"
                     onclick="restaurarConteudo()">
                     <span class="fs-5 d-none d-sm-inline">Menu</span>
                 </a>
                 <ul class="nav nav-pills flex-column mb-sm-auto mb-0 align-items-center align-items-sm-start" id="menu">
                     <li>
-                        <a href="#submenu1" data-bs-toggle="collapse" class="text-black nav-link px-0 align-middle"
-                            role="button">
-                            <i class="fs-4 bi-speedometer2"></i> <span class="ms-1 d-none d-sm-inline">Turmas</span>
-                        </a>
-                        <ul class="collapse nav flex-column ms-1" id="submenu1" data-bs-parent="#menu">
-                            <li class="w-100">
-                                <a href="#" class="nav-link px-0" onclick="trocarConteudo1()"> <span
-                                        class="text-white d-none d-sm-inline">Sala A1</span> 1 </a>
-                            </li>
-                            <li>
-                                <a href="#" class="nav-link px-0" onclick="trocarConteudo2()"> <span
-                                        class="text-white d-none d-sm-inline">Sala A2</span> 2 </a>
-                            </li>
-                        </ul>
-                    </li>
-                    <li>
-                        <a href="#" class="text-black nav-link px-0 align-middle" onclick="trocarConteudo3()">
-                            <i class="fs-4 bi-table"></i> <span class="ms-1 d-none d-sm-inline">Cadastrar
-                                alunos</span></a>
-                    </li>
-                    <li>
-                        <a href="#" class="text-black nav-link px-0 align-middle" onclick="trocarConteudo4()">
+                        <a href="/DiarioDeBordo" class="text-black nav-link px-0 align-middle">
                             <i class="fs-4 bi-table"></i> <span class="ms-1 d-none d-sm-inline text-white">Diário de
                                 bordo</span></a>
-                    </li>
-                    <li>
-                        <a href="/teste" class="text-black nav-link px-0 align-middle" onclick="trocarConteudo4()">
-                            <i class="fs-4 bi-table"></i> <span class="ms-1 d-none d-sm-inline">Diário de bordo
-                                teste</span></a>
                     </li>
                 </ul>
                 <hr>
@@ -76,7 +50,7 @@
         </div>
         <div class="col py-3" id="conteudo">
             <h3>Bem vindo(a) {{nome}}.</h3>
-            <form id="audioForm" method="POST" action="/teste3">
+            <form id="audioForm" method="POST" action="/DiarioDeBordoInsert">
                 <div class="form-floating">
                     <textarea name="texto" class="form-control" placeholder="Escreva o seu diário de bordo" id="plmds"
                         style="height: 100px"></textarea>
@@ -84,16 +58,18 @@
                 </div>
                 <br>
                 <div>
-                    <div class="row">
+                    <div class="form-floating">
                         <div class="form-check form-switch col-lg-2">
-                            <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDefault">
+                            <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDefault" onclick="toggleVoiceRecognition()">
                             <label class="form-check-label" for="flexSwitchCheckDefault">Gerar com microfone</label>
                         </div>
                     </div>
                 </div>
                 <br>
-                <button class="w-100 mb-2 btn btn-lg rounded-3 btn-primary" type="submit" value="gerar_audio">Gerar áudio</button>
-                <button class="w-100 mb-2 btn btn-lg rounded-3 btn-primary" type="submit" value="gerar_audio_e_salvar">Gerar áudio e enviar</button>
+                <div>
+                    <button class="mb-2 btn btn-lg rounded-3 btn-primary" type="submit" name="acao" value="gerar_audio">Gerar áudio</button>
+                    <button class="mb-2 btn btn-lg rounded-3 btn-primary" type="submit" name="acao" value="gerar_audio_e_salvar">Gerar áudio e enviar</button>
+                </div>
             </form>
             <br>
             {% if audio_path %}
@@ -111,6 +87,9 @@
 
 </html>
 <script>
+    let recognition;
+    let isRecognizing = false; // Variável para rastrear o estado do reconhecimento de voz
+
     // Função para inicializar o reconhecimento de voz
     function initVoiceRecognition() {
         if ('webkitSpeechRecognition' in window) {
@@ -120,18 +99,19 @@
             recognition.lang = 'pt-BR'; // Define o idioma para português do Brasil
 
             recognition.onresult = function (event) {
-                let interimTranscript = '';
-                let finalTranscript = document.getElementById('texto').value;
+                let finalTranscript = ''; // Inicializa o texto final como vazio
 
                 for (let i = event.resultIndex; i < event.results.length; i++) {
                     if (event.results[i].isFinal) {
-                        finalTranscript += event.results[i][0].transcript;
-                    } else {
-                        interimTranscript += event.results[i][0].transcript;
+                        finalTranscript += event.results[i][0].transcript + ' '; // Adiciona um espaço após cada resultado final
                     }
                 }
 
-                document.getElementById('texto').value = finalTranscript + interimTranscript;
+                // Obtém o texto atual do textarea
+                const currentText = document.getElementById('plmds').value;
+
+                // Atualiza o textarea com o texto atual mais o novo resultado
+                document.getElementById('plmds').value = currentText + finalTranscript; // Concatena o texto
             };
 
             recognition.onerror = function (event) {
@@ -139,6 +119,7 @@
             };
 
             recognition.onend = function () {
+                // Removemos qualquer operação que possa interferir no textarea
                 if (isRecognizing) {
                     recognition.start(); // Reinicia o reconhecimento se o switch estiver ativado
                 }
@@ -150,7 +131,7 @@
 
     // Função para alternar o reconhecimento de voz com base no switch
     function toggleVoiceRecognition() {
-        const switchElement = document.getElementById('voiceSwitch');
+        const switchElement = document.getElementById('flexSwitchCheckDefault'); // Use o ID correto
 
         if (switchElement.checked) {
             if (!isRecognizing) {
@@ -159,7 +140,11 @@
             }
         } else {
             isRecognizing = false;
-            recognition.stop();
+            recognition.stop(); // Para o reconhecimento de voz sem alterar o conteúdo
         }
     }
+
+    // Inicializar o reconhecimento de voz quando a página carregar
+    window.onload = initVoiceRecognition;
 </script>
+

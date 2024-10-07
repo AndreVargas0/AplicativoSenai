@@ -62,14 +62,9 @@
               <i class="fs-4 bi-table"></i> <span class="ms-1 d-none d-sm-inline">Cadastrar alunos</span></a>
           </li>
           <li>
-            <a href="#" class="text-black nav-link px-0 align-middle" onclick="trocarConteudo4()">
+            <a href="/DiarioDeBordo" class="text-black nav-link px-0 align-middle">
               <i class="fs-4 bi-table"></i> <span class="ms-1 d-none d-sm-inline">Diario de bordo</span></a>
           </li>
-          <li>
-            <a href="/teste" class="text-black nav-link px-0 align-middle" onclick="trocarConteudo4()">
-              <i class="fs-4 bi-table"></i> <span class="ms-1 d-none d-sm-inline">Diario de bordo teste</span></a>
-          </li>
-
         </ul>
         <hr>
       </div>
@@ -77,7 +72,7 @@
     <!-- <div class="col py-3 ImgagemDeFuno" id="conteudo"
       style="background-image: url('https://uploads.metroimg.com/wp-content/uploads/2020/09/24183845/Senai-Taguatinga.jpg'); background-repeat: no-repeat; background-attachment: fixed; background-size: cover;"> -->
     <div class="col py-3 ImgagemDeFuno" id="conteudo">
-      <h3>Bem vindo(a) {{nome}}.</h3>
+      <h3>Bem vindo(a) {{nome}} .</h3>
       <h2>
         A sua jornada acadêmica é uma aventura de descobertas e crescimento, e cada desafio é uma oportunidade para se
         fortalecer e aprender. Mantenha-se determinado e não deixe que as dificuldades o desanime, pois são esses
@@ -193,32 +188,6 @@
         </div>
     </div>
                 `;
-    conteudo.style.backgroundImage = "none";
-    conteudo.style.backgroundColor = "white";
-  }
-
-  function trocarConteudo4() {
-    const conteudo = document.getElementById('conteudo');
-    conteudo.innerHTML = `
-    <form id="audioForm" method="POST" action="/teste3">
-        <div class="form-floating">
-            <textarea name="texto" class="form-control" placeholder="Escreva o seu diário de bordo" id="plmds" style="height: 100px"></textarea>
-            <label for="plmds">Escreva o seu diário de bordo</label>
-        </div>
-        <br>
-        <div class="form-check form-switch">
-            <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDefault">
-            <label class="form-check-label" for="flexSwitchCheckDefault">Gerar com microfone</label>
-        </div>
-        <br>
-        <button class="w-100 mb-2 btn btn-lg rounded-3 btn-primary" type="submit">Criar áudio</button>
-        <div id="audioContainer">
-            <!-- O áudio gerado será exibido aqui -->
-        </div> 
-        <br>
-    </form>
-  
-  `;
     conteudo.style.backgroundImage = "none";
     conteudo.style.backgroundColor = "white";
   }
