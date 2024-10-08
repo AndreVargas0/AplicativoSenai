@@ -54,7 +54,11 @@
       style="background-image: url('https://uploads.metroimg.com/wp-content/uploads/2020/09/24183845/Senai-Taguatinga.jpg'); background-repeat: no-repeat; background-attachment: fixed; background-size: cover;"> -->
     <div class="col py-3 ImgagemDeFuno" id="conteudo">
       <h1>Gráfico de Sentimentos</h1>
-      <a href="{{ url_for('grafico') }}">Ver Gráfico</a>
+      <a href="{{ url_for('rotas2.grafico') }}">Ver Gráfico</a>
+      {% if graph_path %}
+      <h2>Seu gráfico:</h2>
+      <img src="{{ url_for('static', filename='grafico.png') }}" alt="Gráfico gerado">
+      {% endif %}
     </div>
   </div>
 </div>

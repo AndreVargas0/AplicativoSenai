@@ -1,6 +1,12 @@
-class Aluno:
-    def __init__(self, ra, nome, tempoestudo, rendafamiliar):
-        self.ra = ra  # Registro do aluno (RA)
-        self.nome = nome  # Nome do aluno
-        self.tempoestudo = tempoestudo  # Tempo de estudo em horas
-        self.rendafamiliar = rendafamiliar  # Renda familiar do aluno (decimal)
+from flask_sqlalchemy import SQLAlchemy
+
+db = SQLAlchemy()
+
+class Aluno(db.Model):
+    __tablename__ = 'aluno'  
+
+    id = db.Column(db.Integer, primary_key=True)  # Chave primária
+    ra = db.Column(db.String(8), unique=True, nullable=False)  # RA como CHAR(8)
+    nome = db.Column(db.String(80))  # Nome
+    tempoestudo = db.Column(db.Integer, nullable=False)  # Tempo de estudo
+    rendafamiliar = db.Column(db.DECIMAL(10, 2))  # Renda familiar

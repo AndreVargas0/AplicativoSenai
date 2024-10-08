@@ -1,6 +1,6 @@
 from flask import Blueprint
 from importacoes import *
-from init import db_session
+from database import db_session
 
 rotas1 = Blueprint('rotas1', __name__)
 
@@ -25,13 +25,13 @@ def logar():
         session['ra'] = aluno.ra
         session['nome'] = aluno.nome
         
-        return redirect(url_for('menu'))
+        return redirect(url_for('rotas1.menu'))
     else:
         mensagem = "RA INVÁLIDA"
         return render_template('index.html', mensagem=mensagem)
     
 # Rota da página do diário de bordo
-@rotas1.route('/Menu')
+@rotas1.route('/menu')
 def menu():
     if 'ra' in session and 'nome' in session:
         ra = session['ra']
