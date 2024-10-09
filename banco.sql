@@ -34,7 +34,7 @@ CREATE TABLE avaliacao (
     nota3 int,
     nota4 int,
     fk_aluno_id int NOT NULL
-);
+);''
 
 ALTER TABLE avaliacao
 ADD CONSTRAINT CHECK (nota1 <= 25),
@@ -48,7 +48,16 @@ ALTER TABLE avaliacao ADD CONSTRAINT FK_avaliacao_2
     FOREIGN KEY (fk_aluno_id)
     REFERENCES aluno (id);
 
-INSERT INTO aluno (ra, nome, tempoestudo, rendafamiliar) VALUES ('11111111', 'André vargas', 10, 100000.00);
+INSERT INTO aluno (ra, nome, tempoestudo, rendafamiliar) VALUES 
+('12345678', 'Lucas Mendes', 15, 50000.00),
+('12345679', 'Fernanda Lima', 12, 80000.00),
+('12345680', 'Ricardo Silva', 20, 150000.00),
+('12345681', 'Juliana Santos', 18, 120000.00),
+('12345682', 'Roberto Gomes', 14, 60000.00),
+('12345683', 'Tatiane Alves', 16, 90000.00),
+('12345684', 'Júlio César', 11, 30000.00),
+('12345685', 'Vanessa Soares', 19, 110000.00);
+
 INSERT INTO funcionarios (rg, nome, setor) VALUES 
 ('22222222', 'Vargas Andre', 'TI'),
 ('87654321', 'Maria Oliveira', 'Financeiro'),
