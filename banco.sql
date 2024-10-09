@@ -48,7 +48,6 @@ CREATE TABLE avaliacao (
     UNIQUE (bimestre, fk_aluno_id)
 );
 
-
 -- insert dos dados na tabela aluno
 INSERT INTO aluno (ra, nome, tempoestudo, rendafamiliar) VALUES 
 ('11111111', 'André vargas', 10, 100000.00),
