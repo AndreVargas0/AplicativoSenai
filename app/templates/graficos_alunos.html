@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <title>Diário de bordo</title>
+    <link rel="icon" href="https://static.portaldaindustria.com.br/media/uploads/logotipos/logo-senai.png">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+        crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+
+<body>
+    <header class="p-3 text- text-bg-light db.bg-light">
+        <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
+            <a href="/menu" class="d-flex align-items-center mb-2 mb-lg-0 text-black text-decoration-none">
+                <img src="https://static.portaldaindustria.com.br/media/uploads/logotipos/logo-senai.png" alt=""
+                    width="" height="40">
+                <svg class="bi me-2" width="40" height="32" role="img" aria-label="Bootstrap">
+                    <use xlink:href="#bootstrap"></use>
+                </svg>
+            </a>
+
+            <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
+            </ul>
+
+            <ul class="nav nav-pills">
+                <li class="nav-item"><a href="/logout" class="nav-link active" aria-current="page">Sair</a></li>
+            </ul>
+        </div>
+
+    </header>
+
+    <div class="container-fluid">
+        <div class="row flex-nowrap">
+            <div class="col-auto col-md-3 col-xl-2 px-sm-2 px-0 bg-primary">
+                <div class="d-flex flex-column align-items-center align-items-sm-start px-3 pt-2 text-white min-vh-100">
+                    <a href="/menu"
+                        class="d-flex align-items-center pb-3 mb-md-0 me-md-auto text-black text-decoration-none"
+                        onclick="restaurarConteudo()">
+                        <span class="fs-5 d-none d-sm-inline">Menu</span>
+                    </a>
+                    <ul class="nav nav-pills flex-column mb-sm-auto mb-0 align-items-center align-items-sm-start">
+                        <li>
+                            <a href="/DiarioDeBordo" class="text-black nav-link px-0 align-middle">
+                                <i class="fs-4 bi-table"></i> <span class="ms-1 d-none d-sm-inline text-white">Diário de
+                                    bordo</span></a>
+                        </li>
+                    </ul>
+                    <hr>
+                </div>
+            </div>
+            <div class="col py-3">
+                <h3>Bem-vindo(a), {{ nome }}.</h3>
+                <div class="container mt-5">
+                    <h4>Gerar gráfico dos alunos: </h4>
+                    <form id="myForm" action="{{ url_for('rotas2.grafico') }}" method="get">
+                        <div class="mb-3">
+                            <label for="dropdown1" class="form-label">Selecionar Aluno</label>
+                            <select class="form-select" id="dropdown1" name="ra" required>
+                                <option value="" disabled selected>Escolha um aluno</option>
+                                {% for aluno in alunos %}
+                                <option value="{{ aluno.ra }}">{{ aluno.nome }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="dropdown2" class="form-label">Nuvem de palavras dos diários</label>
+                            <select name="polaridade" class="form-select" id="dropdown2" required>
+                                <option value="" disabled selected>Escolha a Polaridade do gráfico</option>
+                                <option value="Positiva">Positivos</option>
+                                <option value="Neutra">Neutos</option>
+                                <option value="Negativa">Negativos</option>
+                            </select>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">Enviar</button>
+                    </form>
+                    <div>
+                        {% if graph_path %}
+                        <h2>Gráficos:</h2>
+                        <div class="row">
+                            <div class="col">
+                                <img src="{{ graph_path }}" alt="Gráfico gerado" class="img-fluid">
+                            </div>
+                            <div class="col">
+                                <img src="{{ nuvem_path }}" alt="Nuvem de Palavras" class="img-fluid">
+                            </div>
+                        </div>
+                        {% endif %}
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+</body>
+
+</html>
+<script>
+    function enviarDados() {
+        var alunoRa = document.getElementById('dropdown1').value;
+        var polaridade = document.getElementById('dropdown2').value;
+
+        if (alunoRa && polaridade) {
+            // Redireciona para a rota com os parâmetros
+            window.location.href = '/grafico?ra=' + alunoRa + '&polaridade=' + polaridade;
+        } else {
+            alert("Por favor, selecione um aluno e uma polaridade.");
+        }
+    }
+</script>

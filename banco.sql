@@ -11,16 +11,21 @@ create table aluno(
 );
 
 CREATE TABLE diariobordo (
-    id int auto_increment PRIMARY KEY,
-    texto text NOT NULL,
-    datahora datetime,
-    fk_aluno_ra char(8)
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    texto TEXT,
+    datahora DATETIME DEFAULT CURRENT_TIMESTAMP,
+    fk_aluno_ra VARCHAR(10) NOT NULL,
+    polaridade TEXT,
+    FOREIGN KEY (fk_aluno_ra) REFERENCES aluno(ra)
 );
 
-ALTER TABLE diariobordo ADD CONSTRAINT FK_diariobordo_2
-    FOREIGN KEY (fk_aluno_ra)
-    REFERENCES aluno (ra)
-    ON DELETE CASCADE;
+CREATE TABLE funcionarios (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    rg CHAR(8) NOT NULL UNIQUE,
+    nome VARCHAR(100) NOT NULL,
+    setor VARCHAR(50)
+);
+
     
 CREATE TABLE avaliacao (
     id int PRIMARY KEY auto_increment,
@@ -44,5 +49,12 @@ ALTER TABLE avaliacao ADD CONSTRAINT FK_avaliacao_2
     REFERENCES aluno (id);
 
 INSERT INTO aluno (ra, nome, tempoestudo, rendafamiliar) VALUES ('11111111', 'André vargas', 10, 100000.00);
+INSERT INTO funcionarios (rg, nome, setor) VALUES 
+('22222222', 'Vargas Andre', 'TI'),
+('87654321', 'Maria Oliveira', 'Financeiro'),
+('23456789', 'Carlos Pereira', 'Manutenção'),
+('34567890', 'Ana Costa', 'Psicologia');
+
+select *from diariobordo;
 
 

@@ -9,8 +9,10 @@ from textblob import TextBlob
 from googletrans import Translator
 from aluno import Aluno
 from diariobordo import DiarioBordo
+from funcioario import Funcionario
 import os
 import urllib.parse
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
+from wordcloud import WordCloud, STOPWORDS

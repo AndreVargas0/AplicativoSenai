@@ -162,23 +162,24 @@ def DiarioDeBordoInsert():
         # Salva o arquivo de áudio
         tts.save(audio_full_path)
 
-        if acao  == 'gerar_audio_e_salvar':
-                novo_diario = DiarioBordo(texto=texto, fk_aluno_ra=fk_aluno_ra, datahora=submission_time, polaridade=polaridade)
-
-                try:
-                    db_session.add(novo_diario)
-                    db_session.commit()
-                except Exception as e:
-                    db_session.rollback()  
-                    print(f"Erro ao salvar no banco de dados: {e}")
-                    return str(e), 500  
-        else:
-            return render_template('diario.html', audio_path=audio_path)
-                                                    
         # Define o caminho do arquivo de áudio para o template
         audio_path = url_for('static', filename=audio_filename)
+
+        if acao == 'gerar_audio_e_salvar':
+            novo_diario = DiarioBordo(texto=texto, fk_aluno_ra=fk_aluno_ra, datahora=submission_time, polaridade=polaridade)
+
+            try:
+                db_session.add(novo_diario)
+                db_session.commit()
+            except Exception as e:
+                db_session.rollback()  
+                print(f"Erro ao salvar no banco de dados: {e}")
+                return str(e), 500  
+        else:
+            return render_template('diario.html', audio_path=audio_path)
+                                                     
         return render_template('diario.html', audio_path=audio_path)
 
-
     except Exception as e:
-        return str(e), 500  # Retorna erro 500 em caso de exceção
+        print(f"Erro ao processar: {e}")
+        return str(e), 500
