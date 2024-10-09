@@ -153,11 +153,11 @@ def DiarioDeBordoInsert():
         polaridade = blob.sentiment.polarity
 
         if polaridade > 0:
-            polaridade = "positivo"
+            polaridade = "Positiva"
         elif polaridade == 0:
-            polaridade = "neutro"
+            polaridade = "Neutra"
         else:
-            polaridade = "negativo"
+            polaridade = "Negativa"
 
         # Salva o arquivo de áudio
         tts.save(audio_full_path)
@@ -166,7 +166,7 @@ def DiarioDeBordoInsert():
         audio_path = url_for('static', filename=audio_filename)
 
         if acao == 'gerar_audio_e_salvar':
-            novo_diario = DiarioBordo(texto=texto, fk_aluno_ra=fk_aluno_ra, datahora=submission_time, polaridade=polaridade)
+            novo_diario = DiarioBordo(texto=texto, fk_aluno_ra=fk_aluno_ra, polaridade=polaridade)
 
             try:
                 db_session.add(novo_diario)

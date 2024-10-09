@@ -10,3 +10,5 @@ class Aluno(db.Model):
     nome = db.Column(db.String(80))  # Nome
     tempoestudo = db.Column(db.Integer, nullable=False)  # Tempo de estudo
     rendafamiliar = db.Column(db.DECIMAL(10, 2))  # Renda familiar
+
+    

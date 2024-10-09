@@ -1,24 +1,29 @@
-create database projetodiario1;
+-- Criar o banco de dados
+CREATE DATABASE projetodiario1;
 
-use projetodiaro1;
+-- Selecionar o banco de dados
+USE projetodiario1;
 
-create table aluno(
-	id int primary key auto_increment,
-    ra char(8) not null unique,
-	nome VARCHAR(80),
-    tempoestudo INT not null,
+-- Criar a tabela aluno primeiro, pois ela será referenciada por outras tabelas
+CREATE TABLE aluno (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    ra CHAR(8) NOT NULL UNIQUE,
+    nome VARCHAR(80),
+    tempoestudo INT NOT NULL,
     rendafamiliar DECIMAL(10, 2)
 );
 
+-- Criar a tabela diariobordo, que referencia a tabela aluno
 CREATE TABLE diariobordo (
     id INT AUTO_INCREMENT PRIMARY KEY,
     texto TEXT,
     datahora DATETIME DEFAULT CURRENT_TIMESTAMP,
-    fk_aluno_ra VARCHAR(10) NOT NULL,
+    fk_aluno_ra CHAR(8) NOT NULL,
     polaridade TEXT,
     FOREIGN KEY (fk_aluno_ra) REFERENCES aluno(ra)
 );
 
+-- Criar a tabela funcionarios, que não tem chaves estrangeiras
 CREATE TABLE funcionarios (
     id INT AUTO_INCREMENT PRIMARY KEY,
     rg CHAR(8) NOT NULL UNIQUE,
@@ -26,6 +31,7 @@ CREATE TABLE funcionarios (
     setor VARCHAR(50)
 );
     
+-- Criar a tabela avaliacao, que referencia a tabela aluno
 CREATE TABLE avaliacao (
     id INT PRIMARY KEY AUTO_INCREMENT,
     nota1 INT CHECK (nota1 BETWEEN 0 AND 25),
@@ -42,8 +48,19 @@ CREATE TABLE avaliacao (
     UNIQUE (bimestre, fk_aluno_id)
 );
 
+
 -- insert dos dados na tabela aluno
-INSERT INTO aluno (ra, nome, tempoestudo, rendafamiliar) VALUES ('11111111', 'André vargas', 10, 100000.00);
+INSERT INTO aluno (ra, nome, tempoestudo, rendafamiliar) VALUES 
+('11111111', 'André vargas', 10, 100000.00),
+('12345678', 'Estela da Luz', 10, 1500.00),
+('12345679', 'Lucas do Vale', 12, 2000.00),
+('12345680', 'Maya dos Sonhos', 8, 1800.00),
+('12345681', 'Rafael das Estrelas', 9, 2200.00),
+('12345682', 'Sofia Aventureira', 11, 1600.00),
+('12345683', 'João do Horizonte', 7, 1400.00),
+('12345684', 'Ana do Mar', 10, 1700.00),
+('12345685', 'Carlos Radiante', 12, 1900.00);
+
 
 -- insert dos dados na tabela funcionarios
 INSERT INTO funcionarios (rg, nome, setor) VALUES 

@@ -1,7 +1,7 @@
 from importacoes import *
 
 user = 'root'
-password = urllib.parse.quote_plus('andre123')
+password = urllib.parse.quote_plus('senai@123')
 host = 'localhost'
 database = 'projetodiario1'
 connection_string = f'mysql+pymysql://{user}:{password}@{host}/{database}'
