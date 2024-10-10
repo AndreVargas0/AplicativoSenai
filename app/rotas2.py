@@ -1,7 +1,7 @@
 from flask import Blueprint
 from importacoes import * 
 from database import db_session
-
+matplotlib.use('Agg')
 rotas2 = Blueprint('rotas2', __name__)
 
 @rotas2.route('/logar_soe', methods=['POST'])
@@ -61,17 +61,13 @@ def grafico():
     sns.barplot(x='polaridade', y='count', data=count_df)
     plt.title(f'Distribuição de Polaridade para o Aluno {aluno_nome}')
     plt.ylabel('Contagem')
-    
-    # Salvar o gráfico de polaridade
-    base_dir = os.path.abspath(os.path.dirname(__file__))
-    static_dir = os.path.join(base_dir, 'static')
 
-    # Verifica se o caminho existe
-    if not os.path.exists(static_dir):
-        os.makedirs(static_dir)
+    # Criar a pasta 'graficos' dentro de 'static' se não existir
+    graficos_dir = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'static', 'graficos')
+    os.makedirs(graficos_dir, exist_ok=True)
 
-    grafico_filename = f'grafico_{ra}.png'
-    graph_path = os.path.join(static_dir, grafico_filename)
+    grafico_filename = 'grafico_polaridade.png'  # Nome fixo
+    graph_path = os.path.join(graficos_dir, grafico_filename)
     
     plt.savefig(graph_path)
     plt.close()
@@ -80,10 +76,6 @@ def grafico():
     if polaridade_desejada:
         df_filtrado = df[df['polaridade'] == polaridade_desejada]
 
-        print(f'Polaridade desejada: {polaridade_desejada}')  # Log da polaridade desejada
-        print(f'Dados filtrados: {df_filtrado}')  # Log dos dados filtrados
-
-        # Verifique se existem textos filtrados antes de gerar a nuvem de palavras
         if not df_filtrado.empty:
             texto_combined = " ".join(df_filtrado['texto'])
             stopwords = set(STOPWORDS)
@@ -94,19 +86,17 @@ def grafico():
             plt.figure(figsize=(10, 5))
             plt.imshow(wordcloud, interpolation='bilinear')
             plt.axis('off')  # Desliga os eixos
-            plt.title(f'Nuvem de palavras da polaridade {polaridade_desejada}', fontsize=20)  # Adiciona o título
+            plt.title(f'Nuvem de palavras da polaridade {polaridade_desejada} do aluno(a) {aluno_nome}', fontsize=20)
 
-            # Salvar a nuvem de palavras
-            nuvem_filename = f'nuvem_palavras_{ra}.png'
-            nuvem_path = os.path.join(static_dir, nuvem_filename)
-            plt.savefig(nuvem_path, bbox_inches='tight')  # Salva a figura com o título
-            plt.close()  # Fecha a figura
-            print(f'Nuvem de palavras salva em: {nuvem_path}')  # Log do caminho salvo
+            # Salvar a nuvem de palavras dentro da pasta 'graficos'
+            nuvem_filename = 'nuvem_palavras.png'  # Nome fixo
+            nuvem_path = os.path.join(graficos_dir, nuvem_filename)
+            plt.savefig(nuvem_path, bbox_inches='tight')
+            plt.close()
         else:
-            print('Nenhum texto disponível para a nuvem de palavras.')  # Log se não houver textos
-            nuvem_path = None  # Não gera nuvem de palavras se não houver textos
+            nuvem_path = None
     else:
-        nuvem_path = None  # Se não houver polaridade desejada, não gera nuvem de palavras
+        nuvem_path = None
 
     # Gerar gráfico de linha para polaridade negativa
     df_negativa = df[df['polaridade'] == 'Negativa']
@@ -120,21 +110,64 @@ def grafico():
         plt.xticks(rotation=45)
         plt.grid()
 
-        # Salvar o gráfico de polaridade negativa
-        grafico_negativo_filename = f'grafico_negativo_{ra}.png'
-        graph_negativo_path = os.path.join(static_dir, grafico_negativo_filename)
+        # Salvar o gráfico de polaridade negativa dentro da pasta 'graficos'
+        grafico_negativo_filename = 'grafico_negativo.png'  # Nome fixo
+        graph_negativo_path = os.path.join(graficos_dir, grafico_negativo_filename)
         plt.savefig(graph_negativo_path)
         plt.close()
-
-        print(f'Gráfico de polaridade negativa salvo em: {graph_negativo_path}')  # Log do caminho salvo
     else:
-        graph_negativo_path = None  # Se não houver dados negativos, não gera gráfico
+        graph_negativo_path = None
 
     rg = session['rg']
     alunos = db_session.query(Aluno).all()
     nome = session['nome']
-    return render_template('graficos_alunos.html', graph_path=f'/static/{grafico_filename}', nuvem_path=f'/static/{nuvem_filename}', graph_negativo_path=f'/static/{grafico_negativo_filename}', nome=nome, alunos=alunos, rg=rg)
+    session['aluno_nome'] = aluno_nome
 
+    return render_template('graficos_alunos.html', 
+                           graph_path='/static/graficos/grafico_polaridade.png', 
+                           nuvem_path='/static/graficos/nuvem_palavras.png', 
+                           graph_negativo_path='/static/graficos/grafico_negativo.png', 
+                           nome=nome, alunos=alunos, rg=rg)
+
+@rotas2.route('/download_zip')
+def download_zip():
+    aluno_nome = session.get('aluno_nome')
+    if not aluno_nome:
+        return "Aluno não encontrado.", 404
+
+    aluno_nome = aluno_nome.replace(" ", "")
+    zip_filename = f'Graficos_do_aluno_{aluno_nome}'
+    zip_path = os.path.join('static', zip_filename)
+
+    # Define o diretório de gráficos a ser zipado
+    folder_to_zip = os.path.join('static', 'graficos')
+
+    # Cria o arquivo zip
+    shutil.make_archive(zip_path, 'zip', folder_to_zip)
+
+    # Retorna o arquivo zip como download
+    return send_file(f'{zip_path}.zip', as_attachment=True, download_name=f'{zip_filename}.zip')
+
+
+@rotas2.route('/download_zip')
+def download_zip():
+    # Caminho da pasta que você deseja zipar
+    folder_path = os.path.join('static', 'graficos')
+    zip_buffer = BytesIO()
+
+    # Cria o arquivo ZIP
+    with zipfile.ZipFile(zip_buffer, 'w', zipfile.ZIP_DEFLATED) as zip_file:
+        for foldername, subfolders, filenames in os.walk(folder_path):
+            for filename in filenames:
+                file_path = os.path.join(foldername, filename)
+                # Adiciona o arquivo ao ZIP
+                zip_file.write(file_path, os.path.relpath(file_path, folder_path))
+
+    # Volta para o início do BytesIO buffer
+    zip_buffer.seek(0)
+
+    # Retorna o arquivo ZIP como resposta
+    return send_file(zip_buffer, as_attachment=True, download_name='graficos.zip', mimetype='application/zip')
 
 
 @rotas2.route('/menu_soe')
@@ -143,3 +176,5 @@ def listadrop():
     nome = session['nome']
     rg= session['rg']
     return render_template('graficos_alunos.html', alunos=alunos, nome=nome,rg=rg)
+
+

@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, jsonify, redirect, url_for, session, flash,Blueprint
+from flask import Flask, render_template, request, jsonify, redirect, url_for, session, flash,Blueprint, send_file
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import create_engine, MetaData
@@ -13,6 +13,9 @@ from funcioario import Funcionario
 import os
 import urllib.parse
 import pandas as pd
+import matplotlib
 import matplotlib.pyplot as plt
 import seaborn as sns
 from wordcloud import WordCloud, STOPWORDS
+import zipfile
+from io import BytesIO
